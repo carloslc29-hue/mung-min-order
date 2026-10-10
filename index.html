@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#c45c26">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>蒙麵 · 一齊落單</title>
+<style>
+
+  :root {
+    --bg: #f7f0e6;
+    --bg2: #fff8ef;
+    --card: #ffffff;
+    --ink: #2a1f14;
+    --muted: #7a6550;
+    --line: #e8d9c4;
+    --brand: #c45c26;
+    --brand-dark: #9a3f14;
+    --brand-soft: #f3d5c0;
+    --green: #2d7a4f;
+    --green-soft: #d8efe3;
+    --warn: #b54708;
+    --warn-soft: #ffe8d1;
+    --danger: #b42318;
+    --danger-soft: #fde8e6;
+    --shadow: 0 2px 12px rgba(42,31,20,.08);
+    --radius: 14px;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --font: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Hiragino Sans CNS", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100dvh;
+    line-height: 1.45;
+    padding-bottom: calc(88px + var(--safe-b));
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: none; background: none; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 0 14px; }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(145deg, #c45c26 0%, #a84318 55%, #8b3412 100%);
+    color: #fff;
+    padding: 18px 14px 22px;
+    border-radius: 0 0 22px 22px;
+    box-shadow: 0 8px 24px rgba(154,63,20,.28);
+    margin-bottom: 14px;
+  }
+  .hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .hero h1 { font-size: 1.55rem; font-weight: 800; letter-spacing: .04em; }
+  .hero .tag {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: .78rem;
+    background: rgba(255,255,255,.18);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .hero .phone {
+    margin-top: 10px;
+    font-size: .9rem;
+    opacity: .95;
+  }
+  .hero .rules {
+    margin-top: 12px;
+    font-size: .78rem;
+    line-height: 1.55;
+    background: rgba(0,0,0,.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .hero .rules li { margin-left: 1.1em; }
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.16);
+    color: #fff;
+    display: grid; place-items: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+  }
+  .tab {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--muted);
+  }
+  .tab.active {
+    background: var(--brand);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(196,92,38,.35);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .card-h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .card-h h2 { font-size: 1.05rem; font-weight: 800; }
+  .badge {
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--brand-soft);
+    color: var(--brand-dark);
+  }
+  .badge.ok { background: var(--green-soft); color: var(--green); }
+  .badge.warn { background: var(--warn-soft); color: var(--warn); }
+
+  /* People list */
+  .person {
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  .person-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+  }
+  .person-head .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e8a87c, #c45c26);
+    color: #fff;
+    display: grid; place-items: center;
+    font-weight: 800;
+    font-size: .95rem;
+    flex-shrink: 0;
+  }
+  .person-head .info { flex: 1; min-width: 0; }
+  .person-head .name { font-weight: 800; font-size: 1rem; }
+  .person-head .meta { font-size: .78rem; color: var(--muted); }
+  .person-head .chev { color: var(--muted); transition: transform .2s; }
+  .person.open .person-head .chev { transform: rotate(90deg); }
+  .person-body { display: none; padding: 0 10px 12px; }
+  .person.open .person-body { display: block; }
+
+  .bowl {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .bowl-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #faf5ee;
+    border-bottom: 1px solid var(--line);
+  }
+  .bowl-head .title { font-weight: 800; flex: 1; font-size: .95rem; }
+  .bowl-body { padding: 12px; }
+  .bowl-price {
+    font-weight: 800;
+    color: var(--brand);
+    font-size: .95rem;
+  }
+
+  .section-label {
+    font-size: .78rem;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: .02em;
+    margin: 14px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label:first-child { margin-top: 0; }
+  .section-label .req {
+    font-size: .68rem;
+    background: var(--danger-soft);
+    color: var(--danger);
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+
+  .chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--ink);
+    transition: .15s;
+  }
+  .chip:active { transform: scale(.97); }
+  .chip.selected {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+    color: var(--brand-dark);
+  }
+  .chip .price { font-size: .72rem; color: var(--muted); font-weight: 700; }
+  .chip.selected .price { color: var(--brand); }
+  .chip .pop { font-size: .75rem; }
+  .chip.disabled {
+    opacity: .4;
+    pointer-events: none;
+  }
+
+  .topping-list { display: flex; flex-direction: column; gap: 6px; }
+  .top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+  }
+  .top-row.on {
+    border-color: var(--brand);
+    background: #fff6f0;
+  }
+  .top-row .t-name { flex: 1; font-size: .88rem; font-weight: 600; min-width: 0; }
+  .top-row .t-price { font-size: .8rem; color: var(--muted); font-weight: 700; white-space: nowrap; }
+  .top-row .pop { margin-right: 2px; }
+  .qty {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .qty button {
+    width: 30px; height: 30px;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--brand);
+    background: #faf5ee;
+  }
+  .qty button:disabled { opacity: .3; }
+  .qty span {
+    min-width: 24px;
+    text-align: center;
+    font-weight: 800;
+    font-size: .9rem;
+  }
+
+  .price-group {
+    font-size: .72rem;
+    font-weight: 800;
+    color: var(--brand-dark);
+    background: var(--brand-soft);
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin: 8px 0 4px;
+    display: inline-block;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    margin-top: 6px;
+  }
+  .toggle-row span { font-weight: 600; font-size: .9rem; }
+  .switch {
+    width: 46px; height: 28px;
+    border-radius: 999px;
+    background: #d9cbb8;
+    position: relative;
+    transition: .2s;
+    flex-shrink: 0;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    transition: .2s;
+  }
+  .switch.on { background: var(--brand); }
+  .switch.on::after { left: 21px; }
+
+  .warn-box {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--warn-soft);
+    color: var(--warn);
+    font-size: .82rem;
+    font-weight: 600;
+  }
+  .ok-box {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--green-soft);
+    color: var(--green);
+    font-size: .82rem;
+    font-weight: 600;
+  }
+
+  .field {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    outline: none;
+    font-size: .95rem;
+  }
+  .field:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(196,92,38,.15); }
+  .field.sm { padding: 8px 10px; font-size: .88rem; }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 750;
+    font-size: .88rem;
+    transition: .15s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary {
+    background: var(--brand);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(196,92,38,.3);
+  }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-ghost {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    color: var(--ink);
+  }
+  .btn-danger {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+  .btn-sm { padding: 6px 10px; font-size: .78rem; border-radius: 8px; }
+  .btn-block { width: 100%; }
+
+  /* Add person bar */
+  .add-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .add-bar .field { flex: 1; }
+
+  /* Summary */
+  .sum-person {
+    border-bottom: 1px dashed var(--line);
+    padding: 12px 0;
+  }
+  .sum-person:last-child { border-bottom: none; }
+  .sum-person h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .sum-bowl {
+    font-size: .85rem;
+    color: var(--muted);
+    padding: 6px 0 6px 8px;
+    border-left: 3px solid var(--brand-soft);
+    margin: 6px 0;
+    line-height: 1.55;
+  }
+  .sum-bowl strong { color: var(--ink); }
+  .grand {
+    background: linear-gradient(135deg, #fff6f0, #f3d5c0);
+    border: 1.5px solid var(--brand-soft);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    margin: 14px 0;
+  }
+  .grand .label { font-size: .85rem; color: var(--muted); font-weight: 700; }
+  .grand .amt {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--brand-dark);
+    letter-spacing: -.02em;
+  }
+  .copy-box {
+    background: #1a120c;
+    color: #f5ebe0;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: .82rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 280px;
+    overflow-y: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+
+  /* Sticky footer */
+  .footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(255,248,239,.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    padding: 10px 14px calc(10px + var(--safe-b));
+    z-index: 40;
+  }
+  .footer-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer .total-label { font-size: .75rem; color: var(--muted); font-weight: 700; }
+  .footer .total-amt { font-size: 1.35rem; font-weight: 900; color: var(--brand-dark); }
+  .footer .btn { flex: 1; padding: 12px; font-size: .95rem; }
+
+  /* Empty */
+  .empty {
+    text-align: center;
+    padding: 36px 16px;
+    color: var(--muted);
+  }
+  .empty .emoji { font-size: 2.4rem; margin-bottom: 8px; }
+  .empty p { font-size: .9rem; }
+
+  /* Modal */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(42,31,20,.45);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 14px;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 18px 18px 14px 14px;
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    box-shadow: 0 -8px 40px rgba(0,0,0,.2);
+    animation: slideUp .25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  .modal h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+  .modal p { font-size: .9rem; color: var(--muted); margin-bottom: 16px; }
+  .modal .btn-row { margin-top: 0; }
+  .modal .btn { flex: 1; }
+
+  .toast {
+    position: fixed;
+    bottom: calc(100px + var(--safe-b));
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a120c;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s;
+    z-index: 200;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .hidden { display: none !important; }
+  .drink-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .drink-price {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .drink-price label { font-size: .82rem; color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .drink-price .field { flex: 1; }
+
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 700;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    color: var(--muted);
+  }
+  .filter.on {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  .search {
+    margin-bottom: 8px;
+  }
+
+
+  .role-banner {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: .82rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .role-banner.host {
+    background: linear-gradient(135deg, #fff6f0, #f3d5c0);
+    border: 1.5px solid var(--brand-soft);
+    color: var(--brand-dark);
+  }
+  .role-banner.guest {
+    background: var(--green-soft);
+    border: 1.5px solid #b7dfc8;
+    color: var(--green);
+  }
+  .role-banner.locked {
+    background: var(--warn-soft);
+    border: 1.5px solid #f0c9a0;
+    color: var(--warn);
+  }
+  .sync-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.2);
+    color: #fff;
+  }
+  .sync-pill.ok::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #6dffa8; }
+  .sync-pill.warn::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #ffd36d; }
+  .sync-pill.err::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #ff8a80; }
+  .landing {
+    padding: 8px 0 40px;
+  }
+  .landing .card h2 { font-size: 1.15rem; margin-bottom: 8px; }
+  .landing .hint { font-size: .85rem; color: var(--muted); margin-bottom: 14px; }
+  .code-display {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: .18em;
+    text-align: center;
+    padding: 14px;
+    background: #1a120c;
+    color: #f5ebe0;
+    border-radius: 12px;
+    margin: 10px 0;
+    font-family: ui-monospace, Menlo, monospace;
+  }
+  .share-row { display: flex; gap: 8px; margin-top: 8px; }
+  .share-row .field { flex: 1; font-size: .78rem; }
+  .people-chips {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+  }
+  .pchip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 999px;
+    background: #fff; border: 1.5px solid var(--line);
+    font-size: .78rem; font-weight: 700;
+  }
+  .pchip.me { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-dark); }
+  .pchip.ready { border-color: var(--green); }
+  .pchip .dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; }
+  .pchip.ready .dot { background: var(--green); }
+  .ready-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 12px; border-radius: 12px;
+    background: #fff; border: 1.5px solid var(--line); margin-bottom: 12px;
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+  .hero .subrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  body.landing-mode { padding-bottom: 24px; }
+  body.landing-mode .footer { display: none; }
+
+</style>
+</head>
+<body class="landing-mode">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-top">
+        <div>
+          <h1>蒙麵</h1>
+          <div class="tag">車仔麵 · 朋友一齊落單</div>
+        </div>
+        <span class="sync-pill warn" id="syncPill">未連接</span>
+      </div>
+      <div class="phone">☎ 2363 8166　歡迎外賣自取 · 不接受電話落單</div>
+      <div class="subrow hidden" id="heroRoomMeta"></div>
+      <ul class="rules" id="heroRules">
+        <li>每碗最少 <b>3 款配料</b>（花甲可當 1 款）</li>
+        <li>$17 或以上配料 <b>不可雙倍</b></li>
+        <li>免費醬汁最多 2 款，超過每款 +$2</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- LANDING -->
+    <div id="view-landing" class="view active landing">
+      <div class="card">
+        <h2>開新一枱</h2>
+        <p class="hint">你會變成<strong>叫餐人</strong>。複製連結用 WhatsApp 分享；朋友喺任何網絡打開都可以同時揀自己嘅碗，最後由你睇總覽統一叫餐。<br><small style="color:var(--muted)">純靜態網頁 · 用 PeerJS 同步（叫餐人要保持呢個分頁開住）</small></p>
+        <input class="field" id="hostName" type="text" placeholder="你嘅名（叫餐人）" maxlength="20" autocomplete="nickname">
+        <div class="btn-row">
+          <button class="btn btn-primary btn-block" id="btnCreate">🍜 開新一枱</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>加入朋友枱</h2>
+        <p class="hint">打開叫餐人 WhatsApp 連結，或者輸入房間碼（6 位）。需要網絡（PeerJS）先可以即時同步。</p>
+        <input class="field" id="joinCode" type="text" placeholder="房間碼 例如 A3K7P" maxlength="6" autocomplete="off" style="text-transform:uppercase;letter-spacing:.12em;font-weight:800">
+        <input class="field" id="joinName" type="text" placeholder="你嘅名" maxlength="20" autocomplete="nickname" style="margin-top:8px">
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-block" id="btnJoin">加入枱</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROOM -->
+    <div id="view-room" class="view">
+      <div id="roleBanner" class="role-banner host"></div>
+      <div id="reconnectBar" class="card hidden" style="padding:10px 12px">
+        <p class="hint" style="margin:0 0 8px">同叫餐人斷線咗。叫餐人要保持分頁開住；你可以撳下面重連。</p>
+        <button class="btn btn-primary btn-block" id="btnReconnect">🔄 重新連接</button>
+      </div>
+
+      <div class="card" id="shareCard">
+        <div class="card-h"><h2>分享俾朋友</h2><span class="badge" id="roomCodeBadge">----</span></div>
+        <div class="code-display" id="roomCodeBig">----</div>
+        <div class="share-row">
+          <input class="field" id="shareUrl" readonly>
+          <button class="btn btn-primary" id="btnCopyLink">複製連結</button>
+        </div>
+      </div>
+
+      <div class="people-chips" id="peopleChips"></div>
+
+      <div class="ready-bar" id="readyBar">
+        <div>
+          <div style="font-weight:800;font-size:.95rem">我揀完</div>
+          <div style="font-size:.75rem;color:var(--muted)" id="readyHint">話俾叫餐人知你 ready</div>
+        </div>
+        <button class="switch" id="btnReady" aria-label="我揀完"></button>
+      </div>
+
+      <div class="tabs" id="mainTabs">
+        <button class="tab active" data-tab="order">我嘅單</button>
+        <button class="tab" data-tab="summary">總覽</button>
+      </div>
+
+      <div id="tab-order">
+        <div id="lockedNotice" class="role-banner locked hidden">叫餐人已鎖單 — 唔可以再改，等佢叫餐啦</div>
+        <div id="myOrder"></div>
+        <div class="empty hidden" id="emptyMine">
+          <div class="emoji">🍜</div>
+          <p>載入緊你嘅碗…</p>
+        </div>
+      </div>
+
+      <div id="tab-summary" class="hidden">
+        <div class="card">
+          <div class="card-h">
+            <h2>全枱總覽</h2>
+            <span class="badge" id="sumCount">0 人</span>
+          </div>
+          <div id="summaryBody"></div>
+        </div>
+        <div class="grand">
+          <div class="label">合共</div>
+          <div class="amt" id="grandAmt">$0</div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h2>WhatsApp 文字</h2></div>
+          <div class="copy-box" id="copyText">（未有訂單）</div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-block" id="btnCopyOrder">📋 複製成枱訂單</button>
+          </div>
+        </div>
+        <div class="btn-row" id="hostActions" style="margin-bottom:12px;flex-direction:column">
+          <button class="btn btn-ghost btn-block" id="btnLock">🔒 鎖單（朋友唔可以再改）</button>
+          <button class="btn btn-danger btn-block" id="btnClearBowls">🗑 清空所有碗（保留人）</button>
+        </div>
+        <div class="btn-row" style="margin-bottom:20px">
+          <button class="btn btn-ghost btn-block" id="btnLeave">離開呢枱</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer" id="appFooter">
+    <div class="footer-inner">
+      <div>
+        <div class="total-label">全枱合共</div>
+        <div class="total-amt" id="footerTotal">$0</div>
+      </div>
+      <button class="btn btn-primary" id="btnGoSummary">睇總覽 →</button>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="modal">
+    <div class="modal">
+      <h3 id="modalTitle">確定？</h3>
+      <p id="modalMsg"></p>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="modalCancel">取消</button>
+        <button class="btn btn-danger" id="modalOk">確定</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+// Shared menu + pricing for 蒙麵 multi-order
+"use strict";
+
+const TOPPINGS = [
+    // $12
+    { id: "t12_sunny", name: "煎 Sunny Side Up 蛋", price: 12, popular: false },
+    { id: "t12_sausage", name: "腸仔", price: 12, popular: false },
+    { id: "t12_tofu", name: "豆卜", price: 12, popular: false },
+    { id: "t12_crab", name: "蟹棒", price: 12, popular: false },
+    { id: "t12_ring", name: "炸腐皮（響鈴）", price: 12, popular: false },
+    { id: "t12_fuzhu", name: "腐竹", price: 12, popular: false },
+    { id: "t12_konjac", name: "蒟蒻絲", price: 12, popular: false },
+    { id: "t12_chive", name: "韭黃", price: 12, popular: false },
+    { id: "t12_gluten", name: "炸生筋", price: 12, popular: false },
+    { id: "t12_veg", name: "時菜", price: 12, popular: false },
+    { id: "t12_enoki", name: "金菇", price: 12, popular: false },
+    { id: "t12_sprout", name: "芽菜", price: 12, popular: false },
+    // $13
+    { id: "t13_bpball", name: "黑椒牛筋丸", price: 13, popular: true },
+    { id: "t13_pigblood", name: "豬紅", price: 13, popular: false },
+    { id: "t13_fishcake", name: "香茅魚糕", price: 13, popular: false },
+    { id: "t13_radish", name: "蘿蔔", price: 13, popular: false },
+    { id: "t13_feet", name: "豉汁鳳爪", price: 13, popular: false },
+    { id: "t13_pigskin", name: "豬皮", price: 13, popular: false },
+    { id: "t13_fishball", name: "陳皮魚蛋", price: 13, popular: false },
+    { id: "t13_redsaus", name: "紅腸", price: 13, popular: false },
+    { id: "t13_mushroomball", name: "冬菇豬肉丸", price: 13, popular: true },
+    { id: "t13_seaweed", name: "紫菜", price: 13, popular: false },
+    { id: "t13_wingtip", name: "雞翼尖", price: 13, popular: false },
+    { id: "t13_cheesesaus", name: "芝士腸", price: 13, popular: false },
+    // $14
+    { id: "t14_burger", name: "漢堡肉", price: 14, popular: false },
+    { id: "t14_tofu", name: "炆炸豆腐", price: 14, popular: true },
+    { id: "t14_midwing", name: "滷水雞中翼", price: 14, popular: false },
+    // $15
+    { id: "t15_spam", name: "厚切餐肉", price: 15, popular: false },
+    { id: "t15_chikuwa", name: "芝士竹輪", price: 15, popular: true },
+    { id: "t15_furoll", name: "炸腐皮卷", price: 15, popular: true },
+    // $16
+    { id: "t16_shishamo", name: "炸多春魚", price: 16, popular: true },
+    { id: "t16_mushroom", name: "蠔皇冬菇", price: 16, popular: false },
+    { id: "t16_cabbage", name: "天津白菜餃", price: 16, popular: true },
+    { id: "t16_chivedum", name: "韭菜餃", price: 16, popular: true },
+    { id: "t16_egg", name: "溏心蛋（精選鴨蛋）", price: 16, popular: true },
+    // $17 — no double
+    { id: "t17_trotter", name: "南乳豬手", price: 17, popular: true },
+    { id: "t17_intestine", name: "滷水大腸", price: 17, popular: true },
+    { id: "t17_oyster", name: "煎蠔餅", price: 17, popular: false },
+    // $18 — no double
+    { id: "t18_brisket", name: "柱侯牛腩", price: 18, popular: false },
+    { id: "t18_tripe", name: "金錢肚", price: 18, popular: false },
+    { id: "t18_tendon", name: "五香牛筋", price: 18, popular: true },
+    { id: "t18_squid", name: "辣汁墨魚", price: 18, popular: true },
+    { id: "t18_satay", name: "沙爹肥牛", price: 18, popular: true },
+    // $20 — no double
+    { id: "t20_pork", name: "鮮蝴蝶豬頸肉（送指天椒豉油）", price: 20, popular: true },
+  ];
+
+  const BASES = [
+    { id: "veg", name: "淨菜底", price: 16, extra: 0, group: "veg" },
+    { id: "thick", name: "粗麵", price: 16, extra: 10, group: "16" },
+    { id: "thin", name: "幼麵", price: 16, extra: 10, group: "16" },
+    { id: "mifen", name: "米粉", price: 16, extra: 10, group: "16" },
+    { id: "oil", name: "油麵", price: 16, extra: 10, group: "16" },
+    { id: "mixian", name: "米線", price: 16, extra: 10, group: "16" },
+    { id: "hofun", name: "河粉", price: 16, extra: 10, group: "16" },
+    { id: "macaroni", name: "通粉", price: 16, extra: 10, group: "16", popular: true },
+    { id: "fensi", name: "粉絲", price: 16, extra: 10, group: "16" },
+    { id: "maixin", name: "麥芯粉", price: 16, extra: 10, group: "16" },
+    { id: "silver", name: "銀針粉", price: 16, extra: 10, group: "16", popular: true },
+    { id: "shin", name: "辛拉麵", price: 20, extra: 10, group: "20" },
+    { id: "demae", name: "出前一丁", price: 20, extra: 10, group: "20" },
+    { id: "efu", name: "伊麵", price: 24, extra: 12, group: "24", popular: true },
+    { id: "udon", name: "稻庭烏冬", price: 24, extra: 12, group: "24" },
+  ];
+
+  const SOUPS = [
+    { id: "basic", name: "基本湯", price: 0 },
+    { id: "tomato", name: "特濃番茄薯仔湯", price: 18, popular: true },
+    { id: "cq", name: "重慶麻辣湯（送芽菜／韭黃）", price: 18, spicy: true },
+    { id: "laksa", name: "馬來喇沙湯（送芽菜／豆卜）", price: 18 },
+  ];
+
+  const SAUCES = [
+    { id: "s_radish", name: "秘製辣蘿蔔" },
+    { id: "s_spicy", name: "秘製辣醬" },
+    { id: "s_satay", name: "沙爹汁" },
+    { id: "s_brisket", name: "牛腩汁" },
+  ];
+
+  const CLAM = { id: "clam", name: "新鮮花甲（即叫即煮）", price: 42, popular: true };
+  const SPICE = ["小辣", "中辣", "大辣"];
+  
+
+function uid() {
+    return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+  }
+
+function newBowl() {
+    return {
+      id: uid(),
+      baseId: "thick",
+      extraBase: false,
+      soupId: "basic",
+      spice: "中辣",
+      toppings: {}, // id -> qty
+      clam: 0, // 0, 1, 2...
+      sauces: [],
+      noOnion: false,
+      drinkTemp: "", // "", "熱", "凍"
+      drinkNote: "",
+      drinkPrice: 0,
+    };
+  }
+
+function maxToppingQty(t) {
+    return t && t.price >= 17 ? 1 : 2; // $17+ 不可雙倍
+  }
+
+function clampedToppingQty(t, qty) {
+    const q = Math.max(0, Math.floor(Number(qty) || 0));
+    return Math.min(q, maxToppingQty(t));
+  }
+
+function toppingCount(bowl) {
+    let n = 0;
+    const tops = bowl.toppings || {};
+    for (const [id, qty] of Object.entries(tops)) {
+      const t = TOPPINGS.find(x => x.id === id);
+      if (t && clampedToppingQty(t, qty) > 0) n += 1; // each distinct topping = 1 款
+    }
+    if ((Number(bowl.clam) || 0) > 0) n += 1; // 花甲 counts as 1 款 regardless of portions
+    return n;
+  }
+
+function toppingUnits(bowl) {
+    // for display: total topping "份"
+    let n = 0;
+    const tops = bowl.toppings || {};
+    for (const [id, qty] of Object.entries(tops)) {
+      const t = TOPPINGS.find(x => x.id === id);
+      if (t) n += clampedToppingQty(t, qty);
+    }
+    n += Math.max(0, Number(bowl.clam) || 0);
+    return n;
+  }
+
+function calcBowl(bowl) {
+    const base = BASES.find(b => b.id === bowl.baseId) || BASES[1];
+    let total = base.price;
+    if (bowl.extraBase && base.extra > 0) total += base.extra;
+
+    const soup = SOUPS.find(s => s.id === bowl.soupId) || SOUPS[0];
+    total += soup.price;
+
+    const tops = bowl.toppings || {};
+    for (const [id, qty] of Object.entries(tops)) {
+      const t = TOPPINGS.find(x => x.id === id);
+      if (!t) continue;
+      const q = clampedToppingQty(t, qty);
+      if (q > 0) total += t.price * q;
+    }
+    const clamQty = Math.max(0, Math.min(5, Math.floor(Number(bowl.clam) || 0)));
+    if (clamQty > 0) total += CLAM.price * clamQty;
+
+    // unique sauce ids only; first 2 free, each extra +$2
+    const sauceIds = [...new Set(bowl.sauces || [])].filter(id => SAUCES.some(s => s.id === id));
+    const sauceExtra = Math.max(0, sauceIds.length - 2);
+    total += sauceExtra * 2;
+
+    const drinkP = Math.max(0, Number(bowl.drinkPrice) || 0);
+    total += drinkP;
+
+    return total;
+  }
+
+function calcPerson(person) {
+    return person.bowls.reduce((s, b) => s + calcBowl(b), 0);
+  }
+
+function normalizeBowl(raw) {
+    const b = newBowl();
+    if (!raw || typeof raw !== "object") return b;
+    b.id = typeof raw.id === "string" && raw.id ? raw.id : b.id;
+    if (BASES.some(x => x.id === raw.baseId)) b.baseId = raw.baseId;
+    const base = BASES.find(x => x.id === b.baseId);
+    b.extraBase = !!(raw.extraBase && base && base.extra > 0);
+    if (SOUPS.some(x => x.id === raw.soupId)) b.soupId = raw.soupId;
+    if (SPICE.includes(raw.spice)) b.spice = raw.spice;
+    b.toppings = {};
+    if (raw.toppings && typeof raw.toppings === "object") {
+      for (const [id, qty] of Object.entries(raw.toppings)) {
+        const t = TOPPINGS.find(x => x.id === id);
+        if (!t) continue;
+        const q = clampedToppingQty(t, qty);
+        if (q > 0) b.toppings[id] = q;
+      }
+    }
+    b.clam = Math.max(0, Math.min(5, Math.floor(Number(raw.clam) || 0)));
+    b.sauces = [];
+    if (Array.isArray(raw.sauces)) {
+      for (const sid of raw.sauces) {
+        if (SAUCES.some(s => s.id === sid) && !b.sauces.includes(sid)) b.sauces.push(sid);
+      }
+    }
+    b.noOnion = !!raw.noOnion;
+    b.drinkTemp = (raw.drinkTemp === "熱" || raw.drinkTemp === "凍") ? raw.drinkTemp : "";
+    b.drinkNote = b.drinkTemp && typeof raw.drinkNote === "string" ? raw.drinkNote.slice(0, 40) : "";
+    b.drinkPrice = b.drinkTemp ? Math.max(0, Number(raw.drinkPrice) || 0) : 0;
+    return b;
+  }
+
+function calcPeopleTotal(people) {
+  return (people || []).reduce((s, p) => s + calcPerson(p), 0);
+}
+
+function normalizePerson(raw) {
+  const name = typeof raw?.name === "string" ? raw.name.trim().slice(0, 20) : "";
+  const person = {
+    id: typeof raw?.id === "string" && raw.id ? raw.id : uid(),
+    name: name || "未命名",
+    ready: !!raw?.ready,
+    bowls: [],
+  };
+  const bowls = Array.isArray(raw?.bowls) && raw.bowls.length ? raw.bowls : [null];
+  for (const bw of bowls) person.bowls.push(normalizeBowl(bw));
+  return person;
+}
+
+function bowlSummaryLine(bowl, idx) {
+  const base = BASES.find(b => b.id === bowl.baseId);
+  const soup = SOUPS.find(s => s.id === bowl.soupId);
+  const parts = [];
+  parts.push((base ? base.name : "?") + (bowl.extraBase && base && base.extra ? "＋額外粉麵" : ""));
+  let soupName = soup ? soup.name : "基本湯";
+  if (soup && soup.spicy) soupName += "（" + bowl.spice + "）";
+  parts.push(soupName);
+  const tops = [];
+  for (const [id, qty] of Object.entries(bowl.toppings || {})) {
+    if (qty <= 0) continue;
+    const t = TOPPINGS.find(x => x.id === id);
+    if (t) tops.push(t.name + (qty > 1 ? "×" + qty : ""));
+  }
+  if (bowl.clam > 0) tops.push(CLAM.name + (bowl.clam > 1 ? "×" + bowl.clam : ""));
+  if (tops.length) parts.push("配料：" + tops.join("、"));
+  if (bowl.sauces && bowl.sauces.length) {
+    const sn = bowl.sauces.map(id => {
+      const s = SAUCES.find(x => x.id === id);
+      return s ? s.name : id;
+    });
+    parts.push("醬：" + sn.join("、"));
+  }
+  if (bowl.noOnion) parts.push("走蔥");
+  if (bowl.drinkTemp) {
+    let d = bowl.drinkTemp;
+    if (bowl.drinkNote) d += " " + bowl.drinkNote;
+    if (bowl.drinkPrice) d += " ($" + bowl.drinkPrice + ")";
+    parts.push("飲品：" + d);
+  }
+  const tc = toppingCount(bowl);
+  const warn = tc < 3 ? " ⚠️欠配料("+ tc +"/3)" : "";
+  return "碗" + (idx + 1) + "　$" + calcBowl(bowl) + warn + "\n　" + parts.join("｜");
+}
+
+function buildCopyText(people, roomCode) {
+  if (!people || !people.length) return "（未有訂單）";
+  const lines = [];
+  lines.push("【蒙麵 車仔麵落單】" + (roomCode ? " 枱 " + roomCode : ""));
+  lines.push("☎ 2363 8166（外賣自取）");
+  lines.push("");
+  people.forEach((p, i) => {
+    lines.push((i + 1) + ". " + p.name + (p.ready ? " ✓" : "") + "　小計 $" + calcPerson(p));
+    p.bowls.forEach((b, j) => lines.push(bowlSummaryLine(b, j)));
+    lines.push("");
+  });
+  const short = [];
+  people.forEach((p) => {
+    p.bowls.forEach((b, j) => {
+      if (toppingCount(b) < 3) short.push(p.name + " 碗" + (j + 1));
+    });
+  });
+  lines.push("————————");
+  lines.push("合共　$" + calcPeopleTotal(people));
+  if (short.length) lines.push("⚠️ 未夠3款配料：" + short.join("、"));
+  lines.push("（每碗最少3款配料；$17+不可雙倍）");
+  return lines.join("\n");
+}
+
+const api = {
+  TOPPINGS, BASES, SOUPS, SAUCES, CLAM, SPICE,
+  uid, newBowl, maxToppingQty, clampedToppingQty,
+  toppingCount, toppingUnits, calcBowl, calcPerson, calcPeopleTotal,
+  normalizeBowl, normalizePerson, bowlSummaryLine, buildCopyText,
+};
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = api;
+}
+if (typeof window !== "undefined") {
+  window.MungMin = api;
+}
+
+</script>
+<script>
+(function () {
+  "use strict";
+
+  const M = window.MungMin;
+  if (!M) {
+    document.body.innerHTML = "<p style='padding:20px'>載入餐單失敗</p>";
+    return;
+  }
+  if (typeof Peer === "undefined") {
+    document.body.innerHTML =
+      "<p style='padding:20px'>載入 PeerJS 失敗。請用 HTTPS 打開呢個網頁，並確保可以連到 unpkg。</p>";
+    return;
+  }
+
+  const NAME_KEY = "mung-min-static-name";
+  const sessKey = (code) => "mung-min-static-sess-" + code;
+  const PEER_PREFIX = "mmhk"; // PeerJS peer id = prefix + room code (lowercase)
+
+  let roomCode = null;
+  let personId = null;
+  let isHost = false;
+  let room = null;
+  let meLocal = null;
+  let toppingFilter = "all";
+  let toppingSearch = "";
+  let tab = "order";
+  let syncState = "idle";
+  let saveTimer = null;
+  let confirmCb = null;
+  let peer = null;
+  let hostConn = null; // guest -> host DataConnection
+  const guestConns = new Map(); // personId -> DataConnection (host side)
+  const connByPeer = new Map(); // remotePeerId -> { conn, personId }
+  let reconnectTimer = null;
+  let hostPeerId = null;
+  let destroying = false;
+
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+    );
+  }
+
+  function toast(msg) {
+    const el = $("#toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  function confirmModal(title, msg, cb) {
+    $("#modalTitle").textContent = title;
+    $("#modalMsg").textContent = msg;
+    $("#modal").classList.add("show");
+    confirmCb = cb;
+  }
+  $("#modalCancel").onclick = () => {
+    $("#modal").classList.remove("show");
+    confirmCb = null;
+  };
+  $("#modalOk").onclick = () => {
+    $("#modal").classList.remove("show");
+    if (confirmCb) confirmCb();
+    confirmCb = null;
+  };
+  $("#modal").addEventListener("click", (e) => {
+    if (e.target.id === "modal") {
+      $("#modal").classList.remove("show");
+      confirmCb = null;
+    }
+  });
+
+  function setSync(state, label) {
+    syncState = state;
+    const el = $("#syncPill");
+    el.className = "sync-pill " + (state === "ok" ? "ok" : state === "err" ? "err" : "warn");
+    el.textContent = label;
+    const bar = $("#reconnectBar");
+    if (bar) {
+      const show = !isHost && !!roomCode && state === "err";
+      bar.classList.toggle("hidden", !show);
+    }
+  }
+
+  function savedName() {
+    try {
+      return localStorage.getItem(NAME_KEY) || "";
+    } catch (_) {
+      return "";
+    }
+  }
+  function saveName(n) {
+    try {
+      localStorage.setItem(NAME_KEY, n);
+    } catch (_) {}
+  }
+
+  function saveSession() {
+    if (!roomCode || !personId) return;
+    try {
+      localStorage.setItem(
+        sessKey(roomCode),
+        JSON.stringify({ personId, isHost, hostPeerId: hostPeerId || peerIdFromCode(roomCode) })
+      );
+    } catch (_) {}
+  }
+  function loadSession(code) {
+    try {
+      const raw = localStorage.getItem(sessKey(code));
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+  function clearSession(code) {
+    try {
+      localStorage.removeItem(sessKey(code || roomCode));
+    } catch (_) {}
+  }
+
+  function peerIdFromCode(code) {
+    return PEER_PREFIX + String(code || "").toLowerCase();
+  }
+
+  function makeRoomCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let s = "";
+    for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+    return s;
+  }
+
+  function enrichRoom(r) {
+    if (!r) return r;
+    const people = (r.people || []).map((p) => {
+      const bowls = (p.bowls || []).map((b) => M.normalizeBowl(b));
+      return {
+        ...p,
+        bowls,
+        bowlCount: bowls.length,
+        subtotal: M.calcPerson({ bowls }),
+      };
+    });
+    const readyCount = people.filter((p) => p.ready).length;
+    return {
+      ...r,
+      people,
+      personCount: people.length,
+      readyCount,
+      grandTotal: M.calcPeopleTotal(people),
+    };
+  }
+
+  function publicRoom() {
+    return enrichRoom(room);
+  }
+
+  function broadcastState() {
+    if (!isHost || !room) return;
+    room = enrichRoom(room);
+    persistHostSnap();
+    const msg = { type: "state", room: serializeRoom(room) };
+    for (const [, conn] of guestConns) {
+      safeSend(conn, msg);
+    }
+    renderAll();
+  }
+
+  function serializeRoom(r) {
+    return {
+      code: r.code,
+      locked: !!r.locked,
+      people: (r.people || []).map((p) => ({
+        id: p.id,
+        name: p.name,
+        ready: !!p.ready,
+        isHost: !!p.isHost,
+        bowls: (p.bowls || []).map((b) => M.normalizeBowl(b)),
+      })),
+      updatedAt: Date.now(),
+    };
+  }
+
+  function safeSend(conn, msg) {
+    try {
+      if (conn && conn.open) conn.send(msg);
+    } catch (_) {}
+  }
+
+  function destroyPeer() {
+    destroying = true;
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+    if (hostConn) {
+      try {
+        hostConn.close();
+      } catch (_) {}
+      hostConn = null;
+    }
+    for (const [, conn] of guestConns) {
+      try {
+        conn.close();
+      } catch (_) {}
+    }
+    guestConns.clear();
+    connByPeer.clear();
+    if (peer) {
+      try {
+        peer.destroy();
+      } catch (_) {}
+      peer = null;
+    }
+    destroying = false;
+  }
+
+  function showLanding() {
+    document.body.classList.add("landing-mode");
+    $("#view-landing").classList.add("active");
+    $("#view-room").classList.remove("active");
+    $("#heroRules").classList.remove("hidden");
+    setSync("idle", "未連接");
+    destroyPeer();
+    roomCode = null;
+    personId = null;
+    isHost = false;
+    room = null;
+    meLocal = null;
+    hostPeerId = null;
+    const n = savedName();
+    if (n) {
+      $("#hostName").value = n;
+      $("#joinName").value = n;
+    }
+  }
+
+  function showRoom() {
+    document.body.classList.remove("landing-mode");
+    $("#view-landing").classList.remove("active");
+    $("#view-room").classList.add("active");
+    $("#heroRules").classList.add("hidden");
+    renderAll();
+  }
+
+  function meFromRoom() {
+    if (!room || !personId) return null;
+    return room.people.find((p) => p.id === personId) || null;
+  }
+
+  function ensureMeLocal() {
+    const me = meFromRoom();
+    if (!me) return;
+    if (!meLocal || !saveTimer) {
+      meLocal = {
+        id: me.id,
+        name: me.name,
+        ready: me.ready,
+        bowls: me.bowls.map((b) => M.normalizeBowl(b)),
+      };
+    }
+  }
+
+  function applyRoom(r) {
+    room = enrichRoom(r);
+    ensureMeLocal();
+    const me = meFromRoom();
+    if (me) {
+      isHost = !!me.isHost;
+      personId = me.id;
+    }
+    renderAll();
+  }
+
+  // ─── Host: create room ───
+  function createRoom() {
+    const name = ($("#hostName").value || "").trim() || "叫餐人";
+    saveName(name);
+    setSync("warn", "開枱中…");
+    destroyPeer();
+
+    let attempts = 0;
+    const tryOpen = () => {
+      attempts++;
+      const code = makeRoomCode();
+      const pid = peerIdFromCode(code);
+      const p = new Peer(pid, {
+        debug: 0,
+        config: {
+          iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+          ],
+        },
+      });
+      peer = p;
+      let opened = false;
+
+      p.on("open", (id) => {
+        opened = true;
+        roomCode = code;
+        hostPeerId = id;
+        isHost = true;
+        personId = M.uid();
+        room = enrichRoom({
+          code,
+          locked: false,
+          people: [
+            {
+              id: personId,
+              name,
+              ready: false,
+              isHost: true,
+              bowls: [M.newBowl()],
+            },
+          ],
+        });
+        meLocal = {
+          id: personId,
+          name,
+          ready: false,
+          bowls: room.people[0].bowls.map((b) => M.normalizeBowl(b)),
+        };
+        saveSession();
+        history.replaceState(null, "", sharePath());
+        setSync("ok", "叫餐人 · 等朋友");
+        showRoom();
+        toast("開咗枱 " + code + " · 保持呢個分頁開住");
+      });
+
+      p.on("connection", (conn) => {
+        setupHostConnection(conn);
+      });
+
+      p.on("disconnected", () => {
+        if (destroying) return;
+        setSync("warn", "Peer 斷線 · 重連中…");
+        try {
+          p.reconnect();
+        } catch (_) {}
+      });
+
+      p.on("close", () => {
+        if (destroying) return;
+        setSync("err", "連接已關閉");
+      });
+
+      p.on("error", (err) => {
+        const msg = (err && err.type) || (err && err.message) || String(err);
+        if (msg === "unavailable-id" || String(msg).includes("taken") || String(msg).includes("unavailable")) {
+          try {
+            p.destroy();
+          } catch (_) {}
+          peer = null;
+          if (attempts < 5) {
+            setSync("warn", "換房間碼重試…");
+            tryOpen();
+          } else {
+            setSync("err", "開枱失敗");
+            toast("開枱失敗，請再試");
+          }
+          return;
+        }
+        if (!opened) {
+          setSync("err", "開枱失敗");
+          toast("PeerJS 連唔到：檢查網絡 / 用 HTTPS");
+        } else {
+          setSync("warn", "同步異常");
+        }
+      });
+    };
+
+    tryOpen();
+  }
+
+  function setupHostConnection(conn) {
+    conn.on("open", () => {
+      // wait for hello
+    });
+    conn.on("data", (raw) => {
+      handleHostMessage(conn, raw);
+    });
+    conn.on("close", () => {
+      const meta = connByPeer.get(conn.peer);
+      if (meta && meta.personId) {
+        guestConns.delete(meta.personId);
+      }
+      connByPeer.delete(conn.peer);
+      setSync("ok", "叫餐人 · " + guestConns.size + " 人連線");
+    });
+    conn.on("error", () => {
+      setSync("warn", "有朋友斷線");
+    });
+  }
+
+  function handleHostMessage(conn, raw) {
+    if (!raw || typeof raw !== "object") return;
+    if (raw.type === "hello") {
+      const name = String(raw.name || "").trim().slice(0, 20) || "朋友";
+      let pid = typeof raw.personId === "string" && raw.personId ? raw.personId : null;
+      let person = pid ? room.people.find((p) => p.id === pid) : null;
+      if (!person) {
+        pid = M.uid();
+        person = {
+          id: pid,
+          name,
+          ready: false,
+          isHost: false,
+          bowls: [M.newBowl()],
+        };
+        room.people.push(person);
+      } else {
+        person.name = name;
+      }
+      connByPeer.set(conn.peer, { conn, personId: pid });
+      guestConns.set(pid, conn);
+      room = enrichRoom(room);
+      safeSend(conn, {
+        type: "welcome",
+        personId: pid,
+        isHost: false,
+        room: serializeRoom(room),
+      });
+      broadcastState();
+      setSync("ok", "叫餐人 · " + guestConns.size + " 人連線");
+      return;
+    }
+
+    if (raw.type === "patch") {
+      if (room.locked) {
+        safeSend(conn, { type: "error", message: "已鎖單，唔可以再改" });
+        safeSend(conn, { type: "state", room: serializeRoom(room) });
+        return;
+      }
+      const meta = connByPeer.get(conn.peer);
+      const pid = (meta && meta.personId) || raw.personId;
+      const person = room.people.find((p) => p.id === pid);
+      if (!person || person.isHost) {
+        // guests only; host edits locally
+        return;
+      }
+      if (typeof raw.name === "string" && raw.name.trim()) {
+        person.name = raw.name.trim().slice(0, 20);
+      }
+      person.ready = !!raw.ready;
+      if (Array.isArray(raw.bowls) && raw.bowls.length) {
+        person.bowls = raw.bowls.map((b) => M.normalizeBowl(b));
+      }
+      broadcastState();
+      return;
+    }
+
+    if (raw.type === "leave") {
+      const meta = connByPeer.get(conn.peer);
+      const pid = (meta && meta.personId) || raw.personId;
+      room.people = room.people.filter((p) => p.id !== pid || p.isHost);
+      guestConns.delete(pid);
+      connByPeer.delete(conn.peer);
+      try {
+        conn.close();
+      } catch (_) {}
+      broadcastState();
+      return;
+    }
+
+    if (raw.type === "ping") {
+      safeSend(conn, { type: "pong" });
+    }
+  }
+
+  // Host local edits → update room + broadcast
+  function hostApplyMeLocal() {
+    if (!isHost || !meLocal || !room) return;
+    const me = room.people.find((p) => p.id === personId);
+    if (!me) return;
+    me.name = meLocal.name;
+    me.ready = meLocal.ready;
+    me.bowls = meLocal.bowls.map((b) => M.normalizeBowl(b));
+    room = enrichRoom(room);
+    broadcastState();
+  }
+
+  function scheduleSave() {
+    if (!meLocal || !roomCode) return;
+    if (room && room.locked && !isHost) {
+      toast("已鎖單，唔可以再改");
+      ensureMeLocal();
+      renderAll();
+      return;
+    }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pushMe, 350);
+    renderTotals();
+    renderMyOrder();
+  }
+
+  function pushMe() {
+    saveTimer = null;
+    if (!meLocal || !roomCode) return;
+    if (isHost) {
+      hostApplyMeLocal();
+      setSync("ok", "已更新");
+      return;
+    }
+    if (!hostConn || !hostConn.open) {
+      setSync("err", "未連上叫餐人");
+      toast("未連上叫餐人 · 叫餐人要開住分頁");
+      scheduleGuestReconnect();
+      return;
+    }
+    safeSend(hostConn, {
+      type: "patch",
+      personId,
+      name: meLocal.name,
+      ready: meLocal.ready,
+      bowls: meLocal.bowls,
+    });
+    setSync("ok", "已同步");
+    // optimistic local totals
+    renderTotals();
+  }
+
+  // ─── Guest join ───
+  function joinRoom(code, name, opts) {
+    code = String(code || "")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 6);
+    name = (name || "").trim();
+    if (!code || code.length < 4) {
+      toast("請輸入房間碼");
+      return;
+    }
+    if (!name) {
+      toast("請輸入你嘅名");
+      return;
+    }
+    saveName(name);
+    setSync("warn", "加入中…");
+    destroyPeer();
+
+    roomCode = code;
+    hostPeerId = peerIdFromCode(code);
+    isHost = false;
+    const sess = loadSession(code);
+    const resumeId = (opts && opts.personId) || (sess && sess.personId) || null;
+
+    const p = new Peer({
+      debug: 0,
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+        ],
+      },
+    });
+    peer = p;
+
+    p.on("open", () => {
+      connectToHost(name, resumeId);
+    });
+
+    p.on("disconnected", () => {
+      if (destroying) return;
+      setSync("warn", "重連緊…");
+      try {
+        p.reconnect();
+      } catch (_) {}
+    });
+
+    p.on("error", (err) => {
+      const msg = (err && err.type) || String(err);
+      setSync("err", "連線失敗");
+      if (msg === "peer-unavailable" || String(msg).includes("Unavailable")) {
+        toast("搵唔到叫餐人 · 確認房間碼同叫餐人已開頁");
+      } else {
+        toast("PeerJS 錯誤：請用 HTTPS / 檢查網絡");
+      }
+      scheduleGuestReconnect();
+    });
+  }
+
+  function connectToHost(name, resumeId) {
+    if (!peer || !hostPeerId) return;
+    try {
+      if (hostConn) {
+        try {
+          hostConn.close();
+        } catch (_) {}
+      }
+      hostConn = peer.connect(hostPeerId, { reliable: true });
+    } catch (e) {
+      setSync("err", "連線失敗");
+      scheduleGuestReconnect();
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      if (!hostConn || !hostConn.open) {
+        setSync("err", "連線逾時");
+        toast("連線逾時 · 叫餐人要開住分頁");
+        scheduleGuestReconnect();
+      }
+    }, 12000);
+
+    hostConn.on("open", () => {
+      clearTimeout(timeout);
+      safeSend(hostConn, {
+        type: "hello",
+        name: name || savedName() || "朋友",
+        personId: resumeId || personId || undefined,
+      });
+      setSync("warn", "等叫餐人回應…");
+    });
+
+    hostConn.on("data", (raw) => {
+      handleGuestMessage(raw);
+    });
+
+    hostConn.on("close", () => {
+      if (destroying) return;
+      setSync("err", "同叫餐人斷線");
+      scheduleGuestReconnect();
+    });
+
+    hostConn.on("error", () => {
+      if (destroying) return;
+      setSync("err", "連線錯誤");
+      scheduleGuestReconnect();
+    });
+  }
+
+  function handleGuestMessage(raw) {
+    if (!raw || typeof raw !== "object") return;
+    if (raw.type === "welcome") {
+      personId = raw.personId;
+      isHost = false;
+      applyRoom(raw.room);
+      saveSession();
+      history.replaceState(null, "", sharePath());
+      setSync("ok", "已連上叫餐人");
+      showRoom();
+      toast("加入咗枱 " + roomCode);
+      return;
+    }
+    if (raw.type === "state") {
+      const prevBowls = meLocal && saveTimer ? JSON.stringify(meLocal.bowls) : null;
+      const prevReady = meLocal && saveTimer ? meLocal.ready : null;
+      const prevName = meLocal && saveTimer ? meLocal.name : null;
+      applyRoom(raw.room);
+      if (prevBowls && meLocal) {
+        meLocal.bowls = JSON.parse(prevBowls);
+        meLocal.ready = prevReady;
+        meLocal.name = prevName;
+        renderMyOrder();
+        renderTotals();
+      }
+      setSync("ok", "已同步");
+      return;
+    }
+    if (raw.type === "error") {
+      toast(raw.message || "錯誤");
+      setSync("warn", raw.message || "錯誤");
+      return;
+    }
+  }
+
+  function scheduleGuestReconnect() {
+    if (isHost || destroying || !roomCode) return;
+    clearTimeout(reconnectTimer);
+    reconnectTimer = setTimeout(() => {
+      if (isHost || destroying) return;
+      setSync("warn", "自動重連…");
+      const name = (meLocal && meLocal.name) || savedName() || "朋友";
+      if (peer && !peer.destroyed && peer.open) {
+        connectToHost(name, personId);
+      } else {
+        joinRoom(roomCode, name, { personId });
+      }
+    }, 2500);
+  }
+
+  function sharePath() {
+    const base = location.pathname + location.search.replace(/\?.*$/, "");
+    // keep path, set query
+    return location.pathname + "?room=" + encodeURIComponent(roomCode || "");
+  }
+
+  function shareUrl() {
+    return location.origin + location.pathname + "?room=" + encodeURIComponent(roomCode || "");
+  }
+
+  // ─── Boot from URL ───
+  function rejoinFromUrl() {
+    const params = new URLSearchParams(location.search);
+    const code = (params.get("room") || params.get("host") || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    // host= might be full peer id — extract code if prefixed
+    let room = code;
+    if (params.get("host")) {
+      const h = params.get("host");
+      if (h.toLowerCase().startsWith(PEER_PREFIX)) {
+        room = h.slice(PEER_PREFIX.length).toUpperCase();
+      } else {
+        room = h.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(-6);
+      }
+    }
+    if (!room) {
+      showLanding();
+      return;
+    }
+    room = room.slice(0, 6);
+    const sess = loadSession(room);
+    const name = savedName();
+    $("#joinCode").value = room;
+    if (name) $("#joinName").value = name;
+
+    if (sess && sess.isHost && sess.personId) {
+      // Host refresh: recreate peer with same room code
+      $("#hostName").value = name || "叫餐人";
+      // Try to reclaim same peer id
+      reclaimHost(room, name || "叫餐人", sess.personId);
+      return;
+    }
+
+    if (name) {
+      // auto-join if we have a name
+      joinRoom(room, name, { personId: sess && sess.personId });
+    } else {
+      showLanding();
+      toast("輸入你嘅名再加入枱 " + room);
+    }
+  }
+
+  function reclaimHost(code, name, oldPersonId) {
+    setSync("warn", "恢復叫餐人…");
+    destroyPeer();
+    roomCode = code;
+    hostPeerId = peerIdFromCode(code);
+    const pid = peerIdFromCode(code);
+    const p = new Peer(pid, {
+      debug: 0,
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+        ],
+      },
+    });
+    peer = p;
+    p.on("open", () => {
+      isHost = true;
+      personId = oldPersonId || M.uid();
+      // restore from session storage of last room snapshot if any
+      let bowls = [M.newBowl()];
+      try {
+        const snap = localStorage.getItem("mung-min-static-snap-" + code);
+        if (snap) {
+          const parsed = JSON.parse(snap);
+          if (parsed && Array.isArray(parsed.people)) {
+            room = enrichRoom(parsed);
+            const me = room.people.find((x) => x.isHost) || room.people[0];
+            if (me) {
+              personId = me.id;
+              name = me.name || name;
+            }
+          }
+        }
+      } catch (_) {}
+      if (!room) {
+        room = enrichRoom({
+          code,
+          locked: false,
+          people: [
+            {
+              id: personId,
+              name,
+              ready: false,
+              isHost: true,
+              bowls,
+            },
+          ],
+        });
+      } else {
+        // ensure host person exists
+        let host = room.people.find((x) => x.isHost);
+        if (!host) {
+          host = {
+            id: personId,
+            name,
+            ready: false,
+            isHost: true,
+            bowls: [M.newBowl()],
+          };
+          room.people.unshift(host);
+        }
+        personId = host.id;
+      }
+      meLocal = {
+        id: personId,
+        name: (room.people.find((x) => x.id === personId) || {}).name || name,
+        ready: !!(room.people.find((x) => x.id === personId) || {}).ready,
+        bowls: ((room.people.find((x) => x.id === personId) || {}).bowls || [M.newBowl()]).map((b) =>
+          M.normalizeBowl(b)
+        ),
+      };
+      saveSession();
+      persistHostSnap();
+      setSync("ok", "叫餐人已恢復");
+      showRoom();
+      toast("叫餐人分頁已恢復 · 朋友可再連");
+    });
+    p.on("connection", (conn) => setupHostConnection(conn));
+    p.on("disconnected", () => {
+      if (destroying) return;
+      setSync("warn", "Peer 斷線 · 重連中…");
+      try {
+        p.reconnect();
+      } catch (_) {}
+    });
+    p.on("error", (err) => {
+      const msg = (err && err.type) || String(err);
+      if (msg === "unavailable-id") {
+        setSync("err", "房間碼仲被人佔用");
+        toast("舊連線未斷 · 等幾秒再刷新，或開新一枱");
+        showLanding();
+        return;
+      }
+      setSync("err", "恢復失敗");
+      toast("恢復叫餐人失敗");
+      showLanding();
+    });
+  }
+
+  function persistHostSnap() {
+    if (!isHost || !roomCode || !room) return;
+    try {
+      localStorage.setItem("mung-min-static-snap-" + roomCode, JSON.stringify(serializeRoom(room)));
+    } catch (_) {}
+  }
+
+  // ─── Render (same UX as server version) ───
+  function renderAll() {
+    if (!room) return;
+    renderBanner();
+    renderShare();
+    renderChips();
+    renderReady();
+    renderMyOrder();
+    renderSummary();
+    renderTotals();
+    $("#hostActions").style.display = isHost ? "flex" : "none";
+    {
+      const lockBtn = $("#btnLock");
+      if (lockBtn) {
+        lockBtn.textContent = room.locked
+          ? "🔓 解鎖（俾朋友再改）"
+          : "🔒 鎖單（朋友唔可以再改）";
+      }
+    }
+    $("#shareCard").style.display = isHost ? "block" : "none";
+    const locked = !!room.locked;
+    $("#lockedNotice").classList.toggle("hidden", !locked || isHost);
+    $("#myOrder").style.pointerEvents = locked && !isHost ? "none" : "";
+    $("#myOrder").style.opacity = locked && !isHost ? "0.65" : "";
+  }
+
+  function renderBanner() {
+    const el = $("#roleBanner");
+    if (room.locked) {
+      el.className = "role-banner locked";
+      el.textContent = isHost
+        ? "已鎖單 · 朋友唔可以再改 · 你可以繼續改自己嘅或者抄單去叫"
+        : "叫餐人已鎖單 · 而家唔可以再改 · 等叫餐人統一叫餐";
+    } else if (isHost) {
+      el.className = "role-banner host";
+      el.textContent = "你係叫餐人 · 保持呢個分頁開住 · WhatsApp 分享連結俾朋友";
+    } else {
+      el.className = "role-banner guest";
+      el.textContent = "而家落緊單 · 最後由叫餐人統一叫";
+    }
+  }
+
+  function renderShare() {
+    $("#roomCodeBadge").textContent = room.code;
+    $("#roomCodeBig").textContent = room.code;
+    $("#shareUrl").value = shareUrl();
+  }
+
+  function renderChips() {
+    const box = $("#peopleChips");
+    const people = room.people.map((p) => {
+      if (p.id === personId && meLocal) {
+        return { ...p, bowls: meLocal.bowls, name: meLocal.name, ready: meLocal.ready };
+      }
+      return p;
+    });
+    box.innerHTML = people
+      .map((p) => {
+        const me = p.id === personId;
+        const sub = M.calcPerson(p);
+        const bc = (p.bowls || []).length;
+        return `<span class="pchip ${me ? "me" : ""} ${p.ready ? "ready" : ""}" title="${escapeHtml(p.name)}">
+          <span class="dot"></span>
+          ${escapeHtml(p.name)}${p.isHost ? " · 叫餐" : ""}${me ? "（我）" : ""}
+          · ${bc}碗 $${sub}
+        </span>`;
+      })
+      .join("");
+  }
+
+  function renderReady() {
+    ensureMeLocal();
+    const on = !!(meLocal && meLocal.ready);
+    $("#btnReady").classList.toggle("on", on);
+    const readyCount = room.people.filter((p) =>
+      p.id === personId && meLocal ? meLocal.ready : p.ready
+    ).length;
+    $("#readyHint").textContent = on
+      ? "已標示揀完 ✓"
+      : readyCount + "/" + room.people.length + " 人揀完";
+  }
+
+  function renderTotals() {
+    let live = room ? room.grandTotal : 0;
+    if (meLocal && room) {
+      const others = room.people.filter((p) => p.id !== personId);
+      live = M.calcPeopleTotal(others) + M.calcPerson(meLocal);
+    }
+    $("#footerTotal").textContent = "$" + live;
+    $("#grandAmt").textContent = "$" + live;
+    const readyCount = room
+      ? room.people.filter((p) => (p.id === personId && meLocal ? meLocal.ready : p.ready)).length
+      : 0;
+    $("#sumCount").textContent = (room ? room.people.length : 0) + " 人 · " + readyCount + " ready";
+  }
+
+  function renderSummary() {
+    const body = $("#summaryBody");
+    if (!room.people.length) {
+      body.innerHTML = `<div class="empty"><div class="emoji">📋</div><p>未有任何人</p></div>`;
+      $("#copyText").textContent = "（未有訂單）";
+      return;
+    }
+    const people = room.people.map((p) => {
+      if (p.id === personId && meLocal) {
+        return { ...p, bowls: meLocal.bowls, name: meLocal.name, ready: meLocal.ready };
+      }
+      return p;
+    });
+    body.innerHTML = people
+      .map((p) => {
+        const sub = M.calcPerson(p);
+        const bowlsHtml = p.bowls
+          .map((b, i) => {
+            const line = M.bowlSummaryLine(b, i).split("\n");
+            return `<div class="sum-bowl"><strong>${escapeHtml(line[0])}</strong><br>${escapeHtml(
+              (line[1] || "").trim()
+            )}</div>`;
+          })
+          .join("");
+        return `<div class="sum-person">
+          <h3>${escapeHtml(p.name)}${p.ready ? " ✓" : ""}${p.isHost ? " · 叫餐人" : ""}
+            <span>$${sub}</span></h3>
+          ${bowlsHtml}
+        </div>`;
+      })
+      .join("");
+    $("#copyText").textContent = M.buildCopyText(people, room.code);
+  }
+
+  function renderMyOrder() {
+    ensureMeLocal();
+    const box = $("#myOrder");
+    if (!meLocal) {
+      box.innerHTML = "";
+      return;
+    }
+    box.innerHTML =
+      meLocal.bowls.map((bowl, bi) => renderBowl(bowl, bi)).join("") +
+      `<div class="btn-row">
+        <button class="btn btn-ghost btn-sm" id="btnAddBowl">＋ 再加一碗</button>
+      </div>`;
+    bindBowlEvents(box);
+  }
+
+  function renderBowl(bowl, bi) {
+    const price = M.calcBowl(bowl);
+    const tc = M.toppingCount(bowl);
+    const ok = tc >= 3;
+    const base = M.BASES.find((b) => b.id === bowl.baseId);
+    const soup = M.SOUPS.find((s) => s.id === bowl.soupId);
+
+    return `
+      <div class="bowl" data-bi="${bi}">
+        <div class="bowl-head">
+          <div class="title">碗 ${bi + 1}</div>
+          <div class="bowl-price">$${price}</div>
+          ${meLocal.bowls.length > 1 ? `<button class="btn btn-sm btn-danger" data-del-bowl="${bi}">刪</button>` : ""}
+        </div>
+        <div class="bowl-body">
+          <div class="section-label">粉麵底</div>
+          <div class="chip-grid">
+            ${M.BASES.map(
+              (b) =>
+                `<button type="button" class="chip ${bowl.baseId === b.id ? "selected" : ""}" data-base="${b.id}">
+                  ${escapeHtml(b.name)}${b.popular ? " <span class='pop'>🔥</span>" : ""}
+                  <span class="price">$${b.price}</span>
+                </button>`
+            ).join("")}
+          </div>
+          ${
+            base && base.extra > 0
+              ? `<div class="toggle-row" data-extra-base>
+                  <span>額外粉麵 +$${base.extra}</span>
+                  <button type="button" class="switch ${bowl.extraBase ? "on" : ""}" data-toggle-extra></button>
+                </div>`
+              : ""
+          }
+
+          <div class="section-label">湯底</div>
+          <div class="chip-grid">
+            ${M.SOUPS.map(
+              (s) =>
+                `<button type="button" class="chip ${bowl.soupId === s.id ? "selected" : ""}" data-soup="${s.id}">
+                  ${escapeHtml(s.name)}${s.popular ? " <span class='pop'>🔥</span>" : ""}${s.spicy ? " 🌶" : ""}
+                  <span class="price">${s.price ? "$" + s.price : "免費"}</span>
+                </button>`
+            ).join("")}
+          </div>
+          ${
+            soup && soup.spicy
+              ? `<div class="chip-grid" style="margin-top:6px">
+                  ${M.SPICE.map(
+                    (sp) =>
+                      `<button type="button" class="chip ${bowl.spice === sp ? "selected" : ""}" data-spice="${sp}">${sp}</button>`
+                  ).join("")}
+                </div>`
+              : ""
+          }
+
+          <div class="section-label">配料 <span class="req">最少 3 款</span>
+            <span class="badge ${ok ? "ok" : "warn"}" style="margin-left:auto">${ok ? "已夠 " + tc + " 款" : "仲欠 " + (3 - tc) + " 款"}</span>
+          </div>
+          <input class="field search sm" data-top-search placeholder="搜配料…" value="${escapeHtml(toppingSearch)}">
+          <div class="filter-bar">
+            ${["all", "popular", "12", "13", "14", "15", "16", "17+"]
+              .map((f) => {
+                const label =
+                  f === "all" ? "全部" : f === "popular" ? "人氣" : f === "17+" ? "$17+" : "$" + f;
+                return `<button type="button" class="filter ${toppingFilter === f ? "on" : ""}" data-filter="${f}">${label}</button>`;
+              })
+              .join("")}
+          </div>
+          <div class="topping-list">
+            ${renderToppingRows(bowl)}
+          </div>
+
+          <div class="section-label">花甲（計 1 款配料）</div>
+          <div class="top-row ${bowl.clam > 0 ? "on" : ""}">
+            <div class="t-name">${escapeHtml(M.CLAM.name)} ${M.CLAM.popular ? "🔥" : ""}</div>
+            <div class="t-price">$${M.CLAM.price}</div>
+            <div class="qty">
+              <button type="button" data-clam-minus>−</button>
+              <span>${bowl.clam || 0}</span>
+              <button type="button" data-clam-plus>+</button>
+            </div>
+          </div>
+
+          <div class="section-label">醬汁（首 2 款免費，之後每款 +$2）</div>
+          <div class="chip-grid">
+            ${M.SAUCES.map(
+              (s) =>
+                `<button type="button" class="chip ${(bowl.sauces || []).includes(s.id) ? "selected" : ""}" data-sauce="${s.id}">${escapeHtml(s.name)}</button>`
+            ).join("")}
+          </div>
+
+          <div class="toggle-row" style="margin-top:10px">
+            <span>走蔥</span>
+            <button type="button" class="switch ${bowl.noOnion ? "on" : ""}" data-toggle-onion></button>
+          </div>
+
+          <div class="section-label">飲品（選填）</div>
+          <div class="chip-grid">
+            ${["", "熱", "凍"]
+              .map(
+                (t) =>
+                  `<button type="button" class="chip ${bowl.drinkTemp === t ? "selected" : ""}" data-drink="${t}">${t || "唔要"}</button>`
+              )
+              .join("")}
+          </div>
+          ${
+            bowl.drinkTemp
+              ? `<div class="drink-row">
+                  <input class="field sm" data-drink-note placeholder="飲品名" value="${escapeHtml(bowl.drinkNote || "")}">
+                  <div class="drink-price"><label>$</label><input class="field sm" data-drink-price type="number" min="0" step="1" value="${bowl.drinkPrice || 0}"></div>
+                </div>`
+              : ""
+          }
+
+          ${
+            !ok
+              ? `<div class="warn-box">仲差 ${3 - tc} 款配料先至齊（花甲都計）</div>`
+              : `<div class="ok-box">配料 OK · 呢碗 $${price}</div>`
+          }
+        </div>
+      </div>`;
+  }
+
+  function renderToppingRows(bowl) {
+    let list = M.TOPPINGS.slice();
+    if (toppingFilter === "popular") list = list.filter((t) => t.popular);
+    else if (toppingFilter === "17+") list = list.filter((t) => t.price >= 17);
+    else if (/^\d+$/.test(toppingFilter))
+      list = list.filter((t) => t.price === Number(toppingFilter));
+    if (toppingSearch.trim()) {
+      const q = toppingSearch.trim();
+      list = list.filter((t) => t.name.includes(q));
+    }
+    const byPrice = {};
+    for (const t of list) {
+      (byPrice[t.price] || (byPrice[t.price] = [])).push(t);
+    }
+    return Object.keys(byPrice)
+      .sort((a, b) => a - b)
+      .map((price) => {
+        const rows = byPrice[price]
+          .map((t) => {
+            const qty = M.clampedToppingQty(t, (bowl.toppings || {})[t.id] || 0);
+            const max = M.maxToppingQty(t);
+            return `<div class="top-row ${qty > 0 ? "on" : ""}" data-tid="${t.id}">
+              <div class="t-name">${t.popular ? '<span class="pop">🔥</span> ' : ""}${escapeHtml(t.name)}${max === 1 ? " <span style='font-size:.7rem;color:var(--warn)'>不可雙倍</span>" : ""}</div>
+              <div class="t-price">$${t.price}</div>
+              <div class="qty">
+                <button type="button" data-tq-minus="${t.id}" ${qty <= 0 ? "disabled" : ""}>−</button>
+                <span>${qty}</span>
+                <button type="button" data-tq-plus="${t.id}" ${qty >= max ? "disabled" : ""}>+</button>
+              </div>
+            </div>`;
+          })
+          .join("");
+        return `<div class="price-group">$${price}</div>${rows}`;
+      })
+      .join("");
+  }
+
+  function bindBowlEvents(root) {
+    $("#btnAddBowl")?.addEventListener("click", () => {
+      meLocal.bowls.push(M.newBowl());
+      meLocal.ready = false;
+      scheduleSave();
+      renderMyOrder();
+    });
+
+    root.addEventListener("click", (e) => {
+      const bowlEl = e.target.closest(".bowl[data-bi]");
+      if (!bowlEl) return;
+      const bi = Number(bowlEl.getAttribute("data-bi"));
+      const bowl = meLocal.bowls[bi];
+      if (!bowl) return;
+
+      const del = e.target.closest("[data-del-bowl]");
+      if (del) {
+        confirmModal("刪呢碗？", "刪除後唔可以復原", () => {
+          meLocal.bowls.splice(bi, 1);
+          if (!meLocal.bowls.length) meLocal.bowls.push(M.newBowl());
+          meLocal.ready = false;
+          scheduleSave();
+          renderMyOrder();
+        });
+        return;
+      }
+
+      const baseBtn = e.target.closest("[data-base]");
+      if (baseBtn) {
+        bowl.baseId = baseBtn.getAttribute("data-base");
+        const base = M.BASES.find((b) => b.id === bowl.baseId);
+        if (!base || !base.extra) bowl.extraBase = false;
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      if (e.target.closest("[data-toggle-extra]")) {
+        bowl.extraBase = !bowl.extraBase;
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      const soupBtn = e.target.closest("[data-soup]");
+      if (soupBtn) {
+        bowl.soupId = soupBtn.getAttribute("data-soup");
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      const spiceBtn = e.target.closest("[data-spice]");
+      if (spiceBtn) {
+        bowl.spice = spiceBtn.getAttribute("data-spice");
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      const filterBtn = e.target.closest("[data-filter]");
+      if (filterBtn) {
+        toppingFilter = filterBtn.getAttribute("data-filter");
+        renderMyOrder();
+        return;
+      }
+      const tMinus = e.target.closest("[data-tq-minus]");
+      if (tMinus) {
+        const id = tMinus.getAttribute("data-tq-minus");
+        const t = M.TOPPINGS.find((x) => x.id === id);
+        const cur = M.clampedToppingQty(t, (bowl.toppings || {})[id] || 0);
+        const next = Math.max(0, cur - 1);
+        if (next === 0) delete bowl.toppings[id];
+        else bowl.toppings[id] = next;
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      const tPlus = e.target.closest("[data-tq-plus]");
+      if (tPlus) {
+        const id = tPlus.getAttribute("data-tq-plus");
+        const t = M.TOPPINGS.find((x) => x.id === id);
+        const cur = M.clampedToppingQty(t, (bowl.toppings || {})[id] || 0);
+        const max = M.maxToppingQty(t);
+        bowl.toppings[id] = Math.min(max, cur + 1);
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      if (e.target.closest("[data-clam-minus]")) {
+        bowl.clam = Math.max(0, (bowl.clam || 0) - 1);
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      if (e.target.closest("[data-clam-plus]")) {
+        bowl.clam = Math.min(5, (bowl.clam || 0) + 1);
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      const sauceBtn = e.target.closest("[data-sauce]");
+      if (sauceBtn) {
+        const sid = sauceBtn.getAttribute("data-sauce");
+        const set = new Set(bowl.sauces || []);
+        if (set.has(sid)) set.delete(sid);
+        else set.add(sid);
+        bowl.sauces = [...set];
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      if (e.target.closest("[data-toggle-onion]")) {
+        bowl.noOnion = !bowl.noOnion;
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+      const drinkBtn = e.target.closest("[data-drink]");
+      if (drinkBtn) {
+        bowl.drinkTemp = drinkBtn.getAttribute("data-drink");
+        if (!bowl.drinkTemp) {
+          bowl.drinkNote = "";
+          bowl.drinkPrice = 0;
+        }
+        meLocal.ready = false;
+        scheduleSave();
+        renderMyOrder();
+        return;
+      }
+    });
+
+    root.addEventListener("input", (e) => {
+      if (e.target.matches("[data-top-search]")) {
+        toppingSearch = e.target.value;
+        const bowlEl = e.target.closest(".bowl[data-bi]");
+        if (!bowlEl) return;
+        const bi = Number(bowlEl.getAttribute("data-bi"));
+        const list = bowlEl.querySelector(".topping-list");
+        if (list) list.innerHTML = renderToppingRows(meLocal.bowls[bi]);
+        return;
+      }
+      const bowlEl = e.target.closest(".bowl[data-bi]");
+      if (!bowlEl) return;
+      const bi = Number(bowlEl.getAttribute("data-bi"));
+      const bowl = meLocal.bowls[bi];
+      if (e.target.matches("[data-drink-note]")) {
+        bowl.drinkNote = e.target.value.slice(0, 40);
+        meLocal.ready = false;
+        scheduleSave();
+      }
+      if (e.target.matches("[data-drink-price]")) {
+        bowl.drinkPrice = Math.max(0, Number(e.target.value) || 0);
+        meLocal.ready = false;
+        scheduleSave();
+      }
+    });
+  }
+
+  function setTab(name) {
+    tab = name;
+    $$(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+    $("#tab-order").classList.toggle("hidden", name !== "order");
+    $("#tab-summary").classList.toggle("hidden", name !== "summary");
+    if (name === "summary") renderSummary();
+  }
+
+  // ─── Wire UI ───
+  $("#btnReconnect") && ($("#btnReconnect").onclick = () => {
+    if (isHost || !roomCode) return;
+    const name = (meLocal && meLocal.name) || savedName() || $("#joinName").value || "朋友";
+    setSync("warn", "重新連接…");
+    joinRoom(roomCode, name, { personId });
+  });
+
+  $("#btnCreate").onclick = () => createRoom();
+  $("#btnJoin").onclick = () => joinRoom($("#joinCode").value, $("#joinName").value);
+  $("#joinCode").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") joinRoom($("#joinCode").value, $("#joinName").value);
+  });
+  $("#hostName").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") createRoom();
+  });
+
+  $("#btnCopyLink").onclick = async () => {
+    const url = $("#shareUrl").value;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast("已複製連結");
+    } catch (_) {
+      $("#shareUrl").select();
+      toast("請手動複製");
+    }
+  };
+
+  $("#btnReady").onclick = () => {
+    if (!meLocal) return;
+    if (room && room.locked && !isHost) {
+      toast("已鎖單");
+      return;
+    }
+    meLocal.ready = !meLocal.ready;
+    $("#btnReady").classList.toggle("on", meLocal.ready);
+    clearTimeout(saveTimer);
+    pushMe();
+  };
+
+  $$("#mainTabs .tab").forEach((t) =>
+    t.addEventListener("click", () => setTab(t.dataset.tab))
+  );
+  $("#btnGoSummary").onclick = () => setTab("summary");
+
+  $("#btnCopyOrder").onclick = async () => {
+    const text = $("#copyText").textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast("已複製訂單");
+    } catch (_) {
+      toast("複製失敗，請手動選擇");
+    }
+  };
+
+  $("#btnLock").onclick = () => {
+    if (!isHost) return;
+    const next = !(room && room.locked);
+    confirmModal(
+      next ? "鎖單？" : "解鎖？",
+      next ? "鎖單後朋友唔可以再改自己嘅碗。" : "解鎖後朋友可以再改。",
+      () => {
+        room.locked = next;
+        broadcastState();
+        persistHostSnap();
+        toast(room.locked ? "已鎖單" : "已解鎖");
+      }
+    );
+  };
+
+  $("#btnClearBowls").onclick = () => {
+    if (!isHost) return;
+    confirmModal("清空所有碗？", "每人會變返一碗空白，人名會保留。", () => {
+      for (const p of room.people) {
+        p.bowls = [M.newBowl()];
+        p.ready = false;
+      }
+      meLocal = null;
+      ensureMeLocal();
+      broadcastState();
+      persistHostSnap();
+      toast("已清空");
+    });
+  };
+
+  $("#btnLeave").onclick = () => {
+    confirmModal(
+      "離開呢枱？",
+      isHost
+        ? "叫餐人離開後朋友會斷線。建議叫完餐先走。"
+        : "你嘅訂單會喺枱度移除。",
+      () => {
+        if (!isHost && hostConn) {
+          safeSend(hostConn, { type: "leave", personId });
+        }
+        clearSession(roomCode);
+        try {
+          localStorage.removeItem("mung-min-static-snap-" + roomCode);
+        } catch (_) {}
+        history.replaceState(null, "", location.pathname);
+        showLanding();
+        toast("已離開");
+      }
+    );
+  };
+
+  // boot
+  const n0 = savedName();
+  if (n0) {
+    $("#hostName").value = n0;
+    $("#joinName").value = n0;
+  }
+  rejoinFromUrl();
+})();
+
+</script>
+</body>
+</html>
